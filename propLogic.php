@@ -164,16 +164,25 @@
 			 */
 			foreach($this->symbolTruthMap as $workingInt => $truthValues)
 			{
+				$returnArray[$workingInt]['truthValues'] = $truthValues; // Store the symbolic values for the int
 				foreach($this->propositions as $proposition)
 				{
-					foreach($truthValues as $symbol => $value) // Debugging
+					/* //Debugging
+					foreach($truthValues as $symbol => $value)
 					{
 						echo $symbol . " is " . $value . "\n";
 					}
+					*/
 
-					$this->parseProposition($proposition, $truthValues);
+					$returnArray[$workingInt]['propositions'][] = 
+						[
+							'propositionValue' => $this->parseProposition($proposition, $truthValues),
+							'proposition' => $proposition
+						];
 				}
 			}
+
+			print_r($returnArray); // Debugging
 		}
 
 		/**
@@ -328,7 +337,8 @@
 					//print_r($workingTruthBox); // Debugging
 				}
 			}
-			echo "Proposition result evaluates to : " . $propositionResult . "\n"; // Debugging
+			// echo "Proposition result evaluates to : " . $propositionResult . "\n"; // Debugging
+			return $propositionResult; // Return it
 			// End some block
 		}
 
