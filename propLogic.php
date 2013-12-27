@@ -233,7 +233,7 @@
 				{
 					foreach($groupLevelContents as $glcIdx => $endGroup)
 					{
-						echo "Working on group level: " . $groupLevel . " and group " . $glcIdx . "\n"; // Debugging
+						//echo "Working on group level: " . $groupLevel . " and group " . $glcIdx . "\n"; // Debugging
 						$groupLength = (($endGroup['end'] - 1) - ($endGroup['start'] + 1)) + 1; // Adjusting for the fact that the start and end locations are where the parens are at, in addition, the +1 is in the event there is only one element inside
 						//$groupData = array_slice($workingTruthBox, $endGroup['start'] + 1, $groupLength, TRUE);
 
@@ -253,7 +253,7 @@
 						//echo "Working on the following characters:\n"; //Debugging
 						//print_r($groupData); // Debugging
 						reset($groupData); // Reset before we use it
-						print_r($groupData); // Debugging
+						//print_r($groupData); // Debugging
 						while($currentData = each($groupData)) // Using each() instead of current() as to distinguish between end of array and boolean false value
 						{
 							prev($groupData); // Since each automatically increments
@@ -277,7 +277,7 @@
 								}
 								
 
-								echo "Setting index " . $endGroup['start'] . " to " . $result . "\n"; // Debugging
+								//echo "Setting index " . $endGroup['start'] . " to " . $result . "\n"; // Debugging
 								for($i = $endGroup['start'] + 1; $i <= $endGroup['end']; ++$i)
 								{
 									if(isset($workingTruthBox[$i])) // This way we don't have PHP complaining about compacting things that already got the works
@@ -293,15 +293,43 @@
 						unset($groupData); // Cleanup
 					}
 				}
-				/*else // Level 0
-				
-				}*/
-			}
-			// End some block
+				else // Level 0
+				{
+					while($currentData = each($workingTruthBox)) // Using each() instead of current() as to distinguish between end of array and boolean false value
+					{
+						prev($workingTruthBox); // Since each automatically increments
+						$currentData = $currentData['value']; // Because each() returns an array
 
-			//print_r($groupMap); // Debugging
-			echo "Level 0 left at:\n"; // Debugging
-			print_r($workingTruthBox); // Debugging
+						if(is_string($currentData)) // At this point, the only strings should be the logical operators
+						{
+							if($currentData == '~')
+							{
+								$nextData = next($workingTruthBox);
+								$result = $this->logicalOperators['~']($nextData); // Negate the following bit o' data
+								prev($workingTruthBox); // Pointer Recovery
+							}
+							else
+							{
+								$previousData = prev($workingTruthBox);
+									next($workingTruthBox); // Pointer Recovery
+								$nextData = next($workingTruthBox);
+									prev($workingTruthBox); // Pointer Recovery
+								$result = $this->logicalOperators[$currentData]($previousData, $nextData); // Compare the bits of data before and after the operator
+							}
+							
+							// Replace the group start with the result, and nuke the rest of the range (compact essentially)
+							$propositionResult = $result;
+						}
+						next($workingTruthBox);
+					}
+
+					//print_r($groupMap); // Debugging
+					//echo "Level 0 left at:\n"; // Debugging
+					//print_r($workingTruthBox); // Debugging
+				}
+			}
+			echo "Proposition result evaluates to : " . $propositionResult . "\n"; // Debugging
+			// End some block
 		}
 
 		public function symbolRunner()
