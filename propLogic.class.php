@@ -10,6 +10,7 @@
 		// General Properties
 		private $bitCount, $propositionCount, $symbols, $propositions;
 		private	$symbolInt, $operatorList, $logicalOperators, $symbolTruthMap, $validFirstChars;
+		private $currentArray;
 
 
 		/**
@@ -137,14 +138,15 @@
 		 */
 		private function truthMapper()
 		{
-			while($this->symbolInt >= 0)
+			$symbolIntCopy = $this->symbolInt;
+			while($symbolIntCopy >= 0)
 			{
-				$currBits = str_split(sprintf("%0".$this->bitCount."b", $this->symbolInt)); // Break the binary string into the individual bits
+				$currBits = str_split(sprintf("%0".$this->bitCount."b", $symbolIntCopy)); // Break the binary string into the individual bits
 				foreach($this->symbols as $idx => $symbol)
 				{
-					$this->symbolTruthMap[$this->symbolInt][$symbol] = (bool)(integer)$currBits[$idx];
+					$this->symbolTruthMap[$symbolIntCopy][$symbol] = (bool)(integer)$currBits[$idx];
 				}
-				--$this->symbolInt;
+				--$symbolIntCopy;
 			}
 		}
 
@@ -153,7 +155,7 @@
 			return $this->symbolTruthMap;
 		}
 
-		public function generateTable()
+		public function parseLogic()
 		{
 			/**
 			 * Order of battle
@@ -190,7 +192,52 @@
 			}
 
 			//print_r($returnArray); // Debugging
+			$this->currentArray = $returnArray; // Assign this latest run to $this-currentArray
 			return $returnArray;
+		}
+
+		public function asciiTable()
+		{
+			// Generate the headers
+			foreach($this->symbols as $symbol)
+			{
+				echo $symbol . "\t";
+			}
+			foreach($this->propositions as $proposition)
+			{
+				echo $proposition . "\t\t";
+			}
+			echo "\n\n";
+
+			// Generate the rest of the table
+			for($i = $this->symbolInt; $i >= 0; --$i)
+			{
+				foreach($this->currentArray['byInt'][$i]['truthValues'] as $value)
+				{
+					if($value)
+					{
+						echo 'T' . "\t";
+					}
+					else
+					{
+						echo 'F' . "\t";
+					}
+				}
+				foreach($this->currentArray['byInt'][$i]['propositions'] as $proposition)
+				{
+					if($proposition['propositionValue'])
+					{
+						echo 'T' . "\t\t";
+					}
+					else
+					{
+						echo 'F' . "\t\t";
+					}
+				}
+
+				echo "\n";
+			}
+
 		}
 
 		/**
@@ -352,10 +399,11 @@
 
 		public function symbolRunner()
 		{
-			while($this->symbolInt >= 0)
+			$symbolIntCopy = $this->symbolInt;
+			while($symbolIntCopy >= 0)
 			{
-				printf("%0".$this->bitCount."b\n", $this->symbolInt);
-				--$this->symbolInt;
+				printf("%0".$this->bitCount."b\n", $symbolIntCopy);
+				--$symbolIntCopy;
 			}
 		}
 	}
