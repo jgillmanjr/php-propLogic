@@ -3,8 +3,12 @@ php-propLogic
 
 My attempt at a very basic propositional logic parser in PHP
 
-It's rough around the edges. Severe implications of garbage in, garbage out.
+It's quite rough around the edges. Needless to say, there are severe implications of garbage in, garbage out.
 
-I'd also recommend using parenthesis since I haven't done anything to ensure operator precedence. So instead of A|B|C, pass in (A|B)|C . In fact, for simple negations, do (~A). A|B|C shouldn't even work, or even just A|B.
+Some things to note.
 
-If a proposition consists of just something like A^B, don't toss those in parenthesis - not returning the correct value for some reason.
+1. When are doing a basic binary comparison (such as A|B or A^C), don't include the parenthesis. At this point, it doesn't return the right value it seems.
+
+However, at this time, operator precedence isn't accounted for. So if you need something like A|B|C, do it like (A|B)|C or whatever your desired precedence is.
+
+Like I said, this is really rough. If you notice any glaring issues outside of the above, let me know.
