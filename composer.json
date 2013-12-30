@@ -1,0 +1,9 @@
+{
+        "name":        "jgillmanjr/php-propLogic",
+        "description":        "A simple propositional logic parser",
+        "homepage":        "https://github.com/jgillmanjr/php-propLogic",
+        "license":        "Apache-2.0",
+        "autoload":        {
+                "files":        ["propLogic.class.php"]
+        }
+}
