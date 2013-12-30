@@ -162,27 +162,35 @@
 			 * 3. ?
 			 * 4. Profit!
 			 */
+
+			foreach($this->propositions as $index => $proposition)
+			{
+				$returnArray['byProp'][$index]['proposition'] = $proposition; // Generates an array for storing the value of a proposition grouped by proposition
+			}
+
 			foreach($this->symbolTruthMap as $workingInt => $truthValues)
 			{
-				$returnArray[$workingInt]['truthValues'] = $truthValues; // Store the symbolic values for the int
-				foreach($this->propositions as $proposition)
-				{
-					/* //Debugging
-					foreach($truthValues as $symbol => $value)
-					{
-						echo $symbol . " is " . $value . "\n";
-					}
-					*/
+				$returnArray['byInt'][$workingInt]['truthValues'] = $truthValues; // Generates an array for storing the value of a proposition grouped by int
 
-					$returnArray[$workingInt]['propositions'][] = 
+				foreach($this->propositions as $propIndex => $proposition)
+				{
+					$propositionWorkingValue = $this->parseProposition($proposition, $truthValues);
+
+					$returnArray['byInt'][$workingInt]['propositions'][$propIndex] = 
 						[
-							'propositionValue' => $this->parseProposition($proposition, $truthValues),
+							'propositionValue' => $propositionWorkingValue,
 							'proposition' => $proposition
+						];
+					$returnArray['byProp'][$propIndex]['truthValues'][$workingInt] =
+						[
+							'truthValues' => $truthValues,
+							'propositionValue' => $propositionWorkingValue
 						];
 				}
 			}
 
-			print_r($returnArray); // Debugging
+			//print_r($returnArray); // Debugging
+			return $returnArray;
 		}
 
 		/**
