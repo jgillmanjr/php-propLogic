@@ -11,6 +11,7 @@ My attempt at a very basic propositional logic parser in PHP.
 
 **Operator Precedence**:
 Higher number == higher precedence
+
 1. >
 2. |
 3. ^
