@@ -98,6 +98,7 @@
 			// Check each proposition for validity
 			foreach($this->propositions as $proposition)
 			{
+				$proposition = preg_replace('/\s+/', '', $proposition); // Strip out whitespace
 				$checkChars	=	str_split($proposition); // Generate the character array
 
 				// Make sure the propositions have a valid first character
